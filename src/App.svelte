@@ -55,29 +55,30 @@
     };
 
     // @ts-expect-error
-    const keys = {
-        z: { key: "z", dur: unit, on: false, char: "・" },
-        x: { key: "x", dur: unit * 3, on: false, char: "－" },
+    let keys = {
+        z: { key: "z", dur: 1, on: false, char: "・" },
+        x: { key: "x", dur: 3, on: false, char: "－" },
     } as { [id: string]: Key };
     keys.z.other = () => keys.x;
     keys.x.other = () => keys.z;
 
-    let next: string | undefined;
+    let playing = "";
     function play(key: string) {
-        const k: Key = keys[key];
+        if (playing) return;
+        const { dur, char }: Key = keys[key];
+        const d = dur * unit;
         o.stop();
         o = a.createOscillator();
         o.connect(g);
         o.start();
-        o.stop(a.currentTime + k.dur / 1000);
-        cache += k.char;
+        playing = char;
+        o.stop(a.currentTime + d / 1000);
+        cache += char;
+        setTimeout(() => (playing = ""), d);
         setTimeout(() => {
             const k = keys[key];
             const other = k.other();
-            if (next && next != key) {
-                play(next);
-                next = undefined;
-            } else if (other.on) {
+            if (other.on) {
                 play(other.key);
             } else if (k.on) {
                 play(key);
@@ -85,34 +86,32 @@
                 value = translate(lang, cache, value);
                 cache = "";
             }
-        }, unit + k.dur);
+        }, unit + d);
     }
 
     function keydownI(key: string) {
-        if (!(key in keys)) return;
-        const k = keys[key];
-        if (k.on) return;
+        const { on, other } = keys[key];
+        if (on) return;
         // trigger reactivity
         keys[key] = { ...keys[key], on: true };
-        next = key;
-        if (!k.other().on) play(key);
+        if (!other().on) play(key);
     }
 
     function keyupI(key: string) {
-        if (!(key in keys)) return;
         keys[key] = { ...keys[key], on: false };
     }
+
     function keydown({ key, target }: KeyboardEvent) {
         if ((target as HTMLElement).tagName == "TEXTAREA") return;
 
-        if (key == straight && !on) return keydownK();
-        if (key in keys) return keydownI(key);
+        if (key == straight && !on) keydownK();
+        else if (key in keys) keydownI(key);
     }
     function keyup({ key, target }: KeyboardEvent) {
         if ((target as HTMLElement).tagName == "TEXTAREA") return;
 
-        if (key == straight) return keyupK();
-        if (key in keys) return keyupI(key);
+        if (key == straight) keyupK();
+        else if (key in keys) keyupI(key);
     }
 
     $: one = keys.z.on;
