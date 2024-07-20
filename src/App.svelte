@@ -23,6 +23,7 @@
     o.start();
 
     function keydownK() {
+        if (on) return;
         on = true;
         o.stop();
         o = a.createOscillator();
@@ -104,7 +105,7 @@
     function keydown({ key, target }: KeyboardEvent) {
         if ((target as HTMLElement).tagName == "TEXTAREA") return;
 
-        if (key == straight && !on) keydownK();
+        if (key == straight) keydownK();
         else if (key in keys) keydownI(key);
     }
     function keyup({ key, target }: KeyboardEvent) {
@@ -139,7 +140,12 @@
         <textarea class="px-2 flex-1 w-full" bind:value />
     </section>
 
-    <button class="dark w-full" class:on><br /></button>
+    <button
+        class="dark w-full"
+        class:on
+        on:touchstart|preventDefault={keydownK}
+        on:touchend|preventDefault={keyupK}><br /></button
+    >
     <section class="w-full flex gap-2">
         <button
             class="flex-1"
