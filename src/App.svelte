@@ -6,7 +6,7 @@
     let cache = "";
     let value = "";
     let volume = 100;
-    let unit = 100;
+    let unit = 60;
     let lang = jpn;
     const langs = { [jpn.name]: eng, [eng.name]: jpn };
 
@@ -111,7 +111,9 @@
     function keyup({ key, target }: KeyboardEvent) {
         if ((target as HTMLElement).tagName == "TEXTAREA") return;
 
-        if (key == straight) keyupK();
+        if (key == "Escape") value = "";
+        else if (key == "Backspace") value = value.slice(0, -1);
+        else if (key == straight) keyupK();
         else if (key in keys) keyupI(key);
     }
 
