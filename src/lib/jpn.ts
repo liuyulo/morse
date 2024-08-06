@@ -1,5 +1,6 @@
 import type { Lang } from "./types"
 const data = Object.freeze({
+    "\n": "・・・－・",
     "い": "・－",
     "ろ": "・－・－",
     "は": "－・・・",
