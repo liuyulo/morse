@@ -112,7 +112,7 @@
         if ((target as HTMLElement).tagName == "TEXTAREA") return;
 
         if (key == "Escape") value = "";
-        else if (key=='Enter') value += '\n';
+        else if (key == "Enter") value += "\n";
         else if (key == "Backspace") value = value.slice(0, -1);
         else if (key == straight) keyupK();
         else if (key in keys) keyupI(key);
