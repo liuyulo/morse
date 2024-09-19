@@ -103,14 +103,10 @@
     }
 
     function keydown({ key, target }: KeyboardEvent) {
-        if ((target as HTMLElement).tagName == "TEXTAREA") return;
-
         if (key == straight) keydownK();
         else if (key in keys) keydownI(key);
     }
     function keyup({ key, target }: KeyboardEvent) {
-        if ((target as HTMLElement).tagName == "TEXTAREA") return;
-
         if (key == "Escape") value = "";
         else if (key == "Enter") value = value + "\n";
         else if (key == "Backspace") value = value.slice(0, -1);
@@ -140,7 +136,7 @@
 
     <section class="w-full border border-white flex-1 flex flex-col">
         <div class="dark text-center h-[24pt]">{cache}</div>
-        <textarea class="px-2 flex-1 w-full" bind:value />
+        <div class="px-2 flex-1 w-full" contenteditable bind:innerText={value}></div>
     </section>
 
     <button
