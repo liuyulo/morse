@@ -10,7 +10,7 @@
     let lang = jpn;
     const langs = { [jpn.name]: eng, [eng.name]: jpn };
 
-    const straight = "`";
+    let straight = "Control";
     const a = new window.AudioContext();
     const g = a.createGain();
     let label: number;
@@ -102,11 +102,12 @@
         keys[key] = { ...keys[key], on: false };
     }
 
-    function keydown({ key, target }: KeyboardEvent) {
+    function keydown({ key }: KeyboardEvent) {
         if (key == straight) keydownK();
         else if (key in keys) keydownI(key);
     }
-    function keyup({ key, target }: KeyboardEvent) {
+    function keyup({ key }: KeyboardEvent) {
+        console.log(key)
         if (key == "Escape") value = "";
         else if (key == "Enter") value = value + "\n";
         else if (key == "Backspace") value = value.slice(0, -1);
@@ -125,6 +126,7 @@
     on:keyup={keyup}
 >
     <section>
+        <input type="text" bind:value={straight} class="w-1/2" />
         <input type="range" bind:value={volume} class="w-1/2" />
         Volume {volume}
         <input type="range" bind:value={unit} class="w-1/2" />
